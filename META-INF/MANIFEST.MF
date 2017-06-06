@@ -3,4 +3,5 @@ Application-Id: AAAFGSSpaceInvaders
 Application-Version: 0.1.0
 Application-PrintableName: AAAFGSSpaceInvaders
 Application-Description: AAAFGSSpaceInvaders
+Application-Activities: esgi.moc.activities.MainActivity
 

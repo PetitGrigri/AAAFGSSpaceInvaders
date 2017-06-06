@@ -1,10 +1,12 @@
 package esgi.moc.pages;
 
+import ej.microui.display.Display;
 import ej.widget.composed.Button;
 import ej.widget.container.List;
 import ej.widget.listener.OnClickListener;
 import ej.widget.navigation.page.Page;
 import esgi.moc.activities.MainActivity;
+import esgi.moc.activities.SpaceInvader;
 
 public class MenuPage extends Page {
 	
@@ -30,7 +32,9 @@ public class MenuPage extends Page {
 			
 			@Override
 			public void onClick() {
-				MainActivity.simpleNav.show(GamePage.class.getName(), false);
+				SpaceInvader spaceInvader = new SpaceInvader(Display.getDefaultDisplay());
+				spaceInvader.show();
+				//MainActivity.simpleNav.show(GamePage.class.getName(), false);
 			}
 		});
 		

@@ -42,7 +42,7 @@ public class MainActivity implements Activity {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		
-MicroUI.start();
+		MicroUI.start();
 		
 		simpleNav = new SimpleNavigator();
 		simpleNav.setTransitionManager(new HorizontalTransitionManager());

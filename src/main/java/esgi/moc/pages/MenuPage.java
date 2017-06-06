@@ -2,7 +2,9 @@ package esgi.moc.pages;
 
 import ej.widget.composed.Button;
 import ej.widget.container.List;
+import ej.widget.listener.OnClickListener;
 import ej.widget.navigation.page.Page;
+import esgi.moc.activities.MainActivity;
 
 public class MenuPage extends Page {
 	
@@ -12,9 +14,9 @@ public class MenuPage extends Page {
 		
 		list = new List(true);
 
-		Button boardButton = new Button("Play !");
-		boardButton.addClassSelector("BUTTON");
-		boardButton.getLabel().addClassSelector("LABEL");
+		Button playButton = new Button("Play !");
+		playButton.addClassSelector("BUTTON");
+		playButton.getLabel().addClassSelector("LABEL");
 		
 		Button scoreButton = new Button("Scores");
 		scoreButton.addClassSelector("BUTTON");
@@ -24,7 +26,15 @@ public class MenuPage extends Page {
 		exitButton.addClassSelector("BUTTON");
 		exitButton.getLabel().addClassSelector("LABEL");
 		
-		list.add(boardButton);
+		playButton.addOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick() {
+				MainActivity.simpleNav.show(GamePage.class.getName(), false);
+			}
+		});
+		
+		list.add(playButton);
 		list.add(scoreButton);
 		list.add(exitButton);
 		

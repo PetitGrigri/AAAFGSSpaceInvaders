@@ -16,6 +16,7 @@ import ej.microui.event.generator.Pointer;
 import ej.microui.util.EventHandler;
 import esgi.moc.spaceinvaders.GraphicalElement;
 import esgi.moc.spaceinvaders.strategie.Strategie;
+import esgi.moc.spaceinvaders.strategie.StrategieExplosion;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol1;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol2;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol3;
@@ -33,10 +34,13 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	
 	private List<GraphicalElement> invaders = new ArrayList<GraphicalElement>();
 	private List<GraphicalElement> spaceShipShoots = new ArrayList<GraphicalElement>();
-	private GraphicalElement toRemoveShoot,toRemoveInvader;
+	private List<GraphicalElement> toRemoveInvaders = new ArrayList<GraphicalElement>();
+	private List<GraphicalElement> toRemoveShoots = new ArrayList<GraphicalElement>();
 	
 	private Timer t = new Timer();
 	private int countTimer = 0;
+	
+	private Strategie strategieExplosion = new StrategieExplosion();
 	
 	//TODO TODO TODO TODO
 
@@ -58,7 +62,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//
+		
 
 		
 		//récupération des dimmensions de l'écran (non utilisé ici car on se base sur la position des barrières)
@@ -102,29 +106,27 @@ public class SpaceInvader extends Displayable implements EventHandler {
 					shoot.execution(countTimer);
 					
 					for (GraphicalElement invaderObject : invaders) {
-						if ((shoot.poxX >= (invaderObject.poxX -18)) && (shoot.poxX <= (invaderObject.poxX +18)) && 
-							(shoot.poxY >= (invaderObject.poxY -18)) && (shoot.poxY <= (invaderObject.poxY +18))) {
-							System.out.println("BOOUM");
-							toRemoveShoot	= shoot;
-							toRemoveInvader	= invaderObject;
+						if ((shoot.poxX >= (invaderObject.poxX -18)) && (shoot.poxX <= (invaderObject.poxX +18)) && (shoot.poxY >= (invaderObject.poxY -18)) && (shoot.poxY <= (invaderObject.poxY +18))) {
+							toRemoveInvaders.add(invaderObject);
+							toRemoveShoots.add(shoot);
 						}
 					}
-					if (toRemoveInvader != null) {
-						invaders.remove(toRemoveInvader);
-						toRemoveInvader = null;
-					}
-					
+
 					if (shoot.poxX == 490) {
-						toRemoveShoot = shoot;
+						toRemoveShoots.add(shoot);
 					}
 				}
-				//suppression des shoot hors écran
-				if (toRemoveShoot != null) {
-					spaceShipShoots.remove(toRemoveShoot);
-					toRemoveShoot = null;
+				
+				
+				for (GraphicalElement  invaderObject : toRemoveInvaders) {
+					invaders.remove(invaderObject);
 				}
+				toRemoveInvaders.clear();
 				
-				
+				for (GraphicalElement  shoot : toRemoveShoots) {
+					spaceShipShoots.remove(shoot);
+				}
+				toRemoveShoots.clear();
 				
 				//////gestion de l'affichage du background
 				if (posBackground1 <= -screenX*2) {

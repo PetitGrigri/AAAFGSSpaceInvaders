@@ -98,7 +98,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				//////gestion du shoot du vaisseau
 				//réalisation du shoot
 				if (countTimer >= 600) {
-					spaceShipShoots.add(new GraphicalElement(70, screenY/2, new StrategieShootSpaceShip()));
+					spaceShipShoots.add(new GraphicalElement(70, posSpaceShipY, new StrategieShootSpaceShip()));
 					countTimer = 0;
 				}
 				//execution de la stratégie du shoot, et détection du shoot hors de l'écran
@@ -162,10 +162,21 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	@Override
 	public boolean handleEvent(int event) 
 	{
-		
+		//Gestion d'un évènement de type pointer
+		if (Event.getType(event) == Event.POINTER) {
+			//quand on à un évènement de type de Drag, on récupère la position, on réinitialise certaines valeurs et on bloque l'animation
+			if (Pointer.isDragged(event)) {
+				Pointer pointer 		= (Pointer) Event.getGenerator(event);
+				this.posSpaceShipY		= pointer.getY();
+				
+			}
+		}
+
 		return false;
 	}
 
+	
+	
 	/**
 	 * Méthode qui permettra d'atualiser l'affichage
 	 */
@@ -188,6 +199,10 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		}
 	}
 
+	
+
+	
+	
 	@Override
 	public EventHandler getController() {
 		// TODO Auto-generated method stub

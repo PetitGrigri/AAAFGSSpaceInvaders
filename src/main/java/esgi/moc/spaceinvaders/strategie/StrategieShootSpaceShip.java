@@ -9,8 +9,8 @@ public class StrategieShootSpaceShip extends Strategie {
 	
 	@Override
 	public void execution(int timer, GraphicalElement shoot) {
-		if ((shoot.poxX >=0) && (shoot.poxY <=490)) {
-			shoot.poxX += 3;
+		if ((shoot.posX >=0) && (shoot.posY <=490)) {
+			shoot.posX += 10;
 		}
 	}
 

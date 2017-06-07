@@ -3,24 +3,19 @@ package esgi.moc.activities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import ej.microui.display.Colors;
 import ej.microui.display.Display;
 import ej.microui.display.Displayable;
-import ej.microui.display.Font;
 import ej.microui.display.GraphicsContext;
 import ej.microui.display.Image;
-import ej.microui.display.transform.ImageRotation;
 import ej.microui.event.Event;
 import ej.microui.event.generator.Pointer;
 import ej.microui.util.EventHandler;
 import esgi.moc.spaceinvaders.GraphicalElement;
 import esgi.moc.spaceinvaders.strategie.Strategie;
 import esgi.moc.spaceinvaders.strategie.StrategieExplosion;
-import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol1;
-import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol2;
-import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol3;
-import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol4;
+import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol;
+import esgi.moc.spaceinvaders.strategie.StrategieInvaderDiagonale1;
+import esgi.moc.spaceinvaders.strategie.StrategieInvaderDiagonale2;
 import esgi.moc.spaceinvaders.strategie.StrategieShootSpaceShip;
 import ej.bon.Timer;
 import ej.bon.TimerTask;
@@ -31,6 +26,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	private int screenX, screenY;
 	private int posBackground1, posBackground2, posBackground3;
 	private int posSpaceShipY;
+	private int posSpaceShipX = 50;
 	
 	private List<GraphicalElement> invaders = new ArrayList<GraphicalElement>();
 	private List<GraphicalElement> spaceShipShoots = new ArrayList<GraphicalElement>();
@@ -51,6 +47,8 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	 */
 	public SpaceInvader(Display display) {
 		super(Display.getDefaultDisplay());
+		
+		//////Initialisation des images
 		try {
 			//le fond de l'écran
 			background1 = Image.createImage("/images/background_1.png");
@@ -62,9 +60,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 
-		
 		//récupération des dimmensions de l'écran (non utilisé ici car on se base sur la position des barrières)
 		this.screenX = Display.getDefaultDisplay().getWidth();
 		this.screenY = Display.getDefaultDisplay().getHeight();
@@ -75,77 +71,84 @@ public class SpaceInvader extends Displayable implements EventHandler {
 
 		this.posSpaceShipY = screenY/2;
 		
-		invaders.add(new GraphicalElement(screenX-50, 0, new StrategieInvaderCol1()));
-		invaders.add(new GraphicalElement(screenX-50, 68, new StrategieInvaderCol2()));
-		invaders.add(new GraphicalElement(screenX-50, 136, new StrategieInvaderCol3()));
-		invaders.add(new GraphicalElement(screenX-50, 204, new StrategieInvaderCol4()));
-		invaders.add(new GraphicalElement(screenX-100, 68, new StrategieInvaderCol1()));
-		invaders.add(new GraphicalElement(screenX-100, 136, new StrategieInvaderCol2()));
-		invaders.add(new GraphicalElement(screenX-100, 204, new StrategieInvaderCol3()));
-		invaders.add(new GraphicalElement(screenX-100, 272, new StrategieInvaderCol4()));
-		invaders.add(new GraphicalElement(screenX-150, 0, new StrategieInvaderCol1()));
-		invaders.add(new GraphicalElement(screenX-150, 204, new StrategieInvaderCol4()));
+		generateLevelInvaders();
+		
 
+		
 		t.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				
 				countTimer+=30;
-				posBackground1-=4;
-				posBackground2-=4;
-				posBackground3-=4;
+				posBackground1-=10;
+				posBackground2-=10;
+				posBackground3-=10;
 				
-				//////gestion du shoot du vaisseau
-				//réalisation du shoot
-				if (countTimer >= 600) {
-					spaceShipShoots.add(new GraphicalElement(70, posSpaceShipY, new StrategieShootSpaceShip()));
-					countTimer = 0;
+				//////gestion du Tir du vaisseau
+				//réalisation du Tir
+				if (countTimer%300 == 0) {
+					spaceShipShoots.add(new GraphicalElement(posSpaceShipX+20, posSpaceShipY, new StrategieShootSpaceShip()));
 				}
+				if (countTimer%4800 == 0) {
+					generateLevelInvaders();
+				}
+				
 				//execution de la stratégie du shoot, et détection du shoot hors de l'écran
 				for (GraphicalElement  shoot : spaceShipShoots) {
 					shoot.execution(countTimer);
 					
+					//si  notre Tir touche un invader on supprime le Tir et l'invader
 					for (GraphicalElement invaderObject : invaders) {
-						if ((shoot.poxX >= (invaderObject.poxX -18)) && (shoot.poxX <= (invaderObject.poxX +18)) && (shoot.poxY >= (invaderObject.poxY -18)) && (shoot.poxY <= (invaderObject.poxY +18))) {
+						if ((shoot.posX >= (invaderObject.posX -18)) && (shoot.posX <= (invaderObject.posX +18)) && (shoot.posY >= (invaderObject.posY -18)) && (shoot.posY <= (invaderObject.posY +18))) {
 							toRemoveInvaders.add(invaderObject);
 							toRemoveShoots.add(shoot);
 						}
 					}
-
-					if (shoot.poxX == 490) {
+					//si le Tir du vaisseau est sorti de l'écran : on le supprime
+					if (shoot.posX >= 490) {
 						toRemoveShoots.add(shoot);
 					}
 				}
 				
-				
-				for (GraphicalElement  invaderObject : toRemoveInvaders) {
-					invaders.remove(invaderObject);
-				}
-				toRemoveInvaders.clear();
-				
-				for (GraphicalElement  shoot : toRemoveShoots) {
-					spaceShipShoots.remove(shoot);
-				}
-				toRemoveShoots.clear();
-				
+				//suppression des invaders mort
+				cleanGraphicalElement();
+
 				//////gestion de l'affichage du background
 				if (posBackground1 <= -screenX*2) {
 					posBackground1=screenX;
 				}
 				if (posBackground2 <= -screenX*2) {
-					posBackground2=screenX;;
+					posBackground2=screenX;
 				}
 				if (posBackground3 <= -screenX*2) {
 					posBackground3=screenX;
 				}
 				
-				//////Execution des stratégies pour les invaders
+				//////Execution des stratégies pour les invaders, détection de la colision
 				for (GraphicalElement invaderObject : invaders) {
 					invaderObject.execution(countTimer);
-				}
+					
+					if 	(!( ((posSpaceShipX + 14)  < (invaderObject.posX - 11)) ||
+							((posSpaceShipX - 14)  > (invaderObject.posX + 11)) || 
+							((posSpaceShipY - 15) > (invaderObject.posY +17))  ||
+							((posSpaceShipY + 15) < (invaderObject.posY-17))
+							)) {
+						System.out.println("BOUUUMMMMMM ! ! !");
+					}
 
+					if (invaderObject.posX <= -10) {
+						System.out.println("BYE BYE"); //toRemoveInvaders.add(invaderObject);
+						toRemoveInvaders.add(invaderObject);
+					}
+				}
+				
+				//suppression des invaders mort
+				cleanGraphicalElement();
+				
+				//System.out.println(invaders.get(0).posX); //toRemoveInvaders.add(invaderObject);
 				/////Actualisation de l'affichage
 				repaint();
+				
 			}
 		}, 0,30);
 		
@@ -156,6 +159,26 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	}
 
 	
+	private void generateLevelInvaders() {		
+		//les invaders initiaux
+		invaders.add(new GraphicalElement(screenX+50, 	0, 		new StrategieInvaderCol(0,   68), 	0));
+		invaders.add(new GraphicalElement(screenX+50, 	68, 	new StrategieInvaderCol(68,  136), 	0));
+		invaders.add(new GraphicalElement(screenX+50, 	138, 	new StrategieInvaderCol(136, 204), 	0));
+		invaders.add(new GraphicalElement(screenX+50, 	204, 	new StrategieInvaderCol(204, 272), 	0));
+		invaders.add(new GraphicalElement(screenX+100, 	68, 	new StrategieInvaderCol(0,   68), 	0));
+		invaders.add(new GraphicalElement(screenX+100, 	138, 	new StrategieInvaderCol(68,  136), 	0));
+		invaders.add(new GraphicalElement(screenX+100, 	204, 	new StrategieInvaderCol(136, 204), 	0));
+		invaders.add(new GraphicalElement(screenX+100, 	272, 	new StrategieInvaderCol(204, 272), 	0));
+		invaders.add(new GraphicalElement(screenX+150, 	0, 		new StrategieInvaderCol(136, 204), 	0));
+		invaders.add(new GraphicalElement(screenX+150, 	204, 	new StrategieInvaderCol(68,  136), 	0));
+		
+		invaders.add(new GraphicalElement(screenX+30, 	10, 	new StrategieInvaderDiagonale1(), 	countTimer+1000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY,new StrategieInvaderDiagonale2(), 	countTimer+2000));
+
+		
+	}
+
+
 	/**
 	 * permet de gérer les évènements sur l'écran (dans ce cas précis)
 	 */
@@ -167,11 +190,9 @@ public class SpaceInvader extends Displayable implements EventHandler {
 			//quand on à un évènement de type de Drag, on récupère la position, on réinitialise certaines valeurs et on bloque l'animation
 			if (Pointer.isDragged(event)) {
 				Pointer pointer 		= (Pointer) Event.getGenerator(event);
-				this.posSpaceShipY		= pointer.getY();
-				
+				this.posSpaceShipY		= pointer.getY();		
 			}
 		}
-
 		return false;
 	}
 
@@ -189,13 +210,15 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		g.drawImage(background2, posBackground2, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 		g.drawImage(background3, posBackground3, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 	
-		g.drawImage(spaceship, 50, posSpaceShipY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
+		g.drawImage(spaceship, posSpaceShipX, posSpaceShipY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
 		
 		for (GraphicalElement invaderObject : invaders) {
-			g.drawImage(invader, invaderObject.poxX, invaderObject.poxY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
+			if (invaderObject.startTimer <= countTimer) {
+				g.drawImage(invader, invaderObject.posX, invaderObject.posY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
+			}
 		}
 		for (GraphicalElement shoot : spaceShipShoots) {
-			g.drawImage(shootSpaceShip, shoot.poxX, shoot.poxY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
+			g.drawImage(shootSpaceShip, shoot.posX, shoot.posY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
 		}
 	}
 
@@ -208,6 +231,17 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		// TODO Auto-generated method stub
 		//return null;
 		return this;
+	}
+	
+	private void cleanGraphicalElement() {
+		for (GraphicalElement  element : toRemoveInvaders) {
+			invaders.remove(element);
+		}
+		for (GraphicalElement  element : toRemoveShoots) {
+			spaceShipShoots.remove(element);
+		}
+		toRemoveInvaders.clear();
+		toRemoveShoots.clear();
 	}
 
 }

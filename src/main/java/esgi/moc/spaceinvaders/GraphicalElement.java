@@ -5,14 +5,22 @@ import esgi.moc.spaceinvaders.strategie.Strategie;
 //42 x 48
 public class GraphicalElement 
 {
-	public int poxX;
-	public int poxY;
+	public int posX, posY;
+	public int startTimer;
 	public Strategie strategie;
 	
 
 	public GraphicalElement(int poxX, int poxY, Strategie strategie) {
-		this.poxX = poxX;
-		this.poxY = poxY;
+		this.posX = poxX;
+		this.posY = poxY;
+		startTimer = 0;
+		this.strategie = strategie;
+	}
+	
+	public GraphicalElement(int poxX, int poxY, Strategie strategie, int startTimer) {
+		this.posX = poxX;
+		this.posY = poxY;
+		this.startTimer = startTimer;
 		this.strategie = strategie;
 	}
 	

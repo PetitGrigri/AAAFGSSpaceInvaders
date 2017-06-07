@@ -34,7 +34,6 @@ public class MenuPage extends Page {
 			public void onClick() {
 				SpaceInvader spaceInvader = new SpaceInvader(Display.getDefaultDisplay());
 				spaceInvader.show();
-				//MainActivity.simpleNav.show(GamePage.class.getName(), false);
 			}
 		});
 		

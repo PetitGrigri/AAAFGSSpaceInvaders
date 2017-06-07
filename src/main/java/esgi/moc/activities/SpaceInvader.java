@@ -33,7 +33,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	
 	private List<GraphicalElement> invaders = new ArrayList<GraphicalElement>();
 	private List<GraphicalElement> spaceShipShoots = new ArrayList<GraphicalElement>();
-	private GraphicalElement toRemove;
+	private GraphicalElement toRemoveShoot,toRemoveInvader;
 	
 	private Timer t = new Timer();
 	private int countTimer = 0;
@@ -91,13 +91,42 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				posBackground2-=4;
 				posBackground3-=4;
 				
-				//gestion du shoot du vaisseau
+				//////gestion du shoot du vaisseau
+				//réalisation du shoot
 				if (countTimer >= 600) {
 					spaceShipShoots.add(new GraphicalElement(70, screenY/2, new StrategieShootSpaceShip()));
 					countTimer = 0;
 				}
+				//execution de la stratégie du shoot, et détection du shoot hors de l'écran
+				for (GraphicalElement  shoot : spaceShipShoots) {
+					shoot.execution(countTimer);
+					
+					for (GraphicalElement invaderObject : invaders) {
+						if ((shoot.poxX >= (invaderObject.poxX -18)) && (shoot.poxX <= (invaderObject.poxX +18)) && 
+							(shoot.poxY >= (invaderObject.poxY -18)) && (shoot.poxY <= (invaderObject.poxY +18))) {
+							System.out.println("BOOUM");
+							toRemoveShoot	= shoot;
+							toRemoveInvader	= invaderObject;
+						}
+					}
+					if (toRemoveInvader != null) {
+						invaders.remove(toRemoveInvader);
+						toRemoveInvader = null;
+					}
+					
+					if (shoot.poxX == 490) {
+						toRemoveShoot = shoot;
+					}
+				}
+				//suppression des shoot hors écran
+				if (toRemoveShoot != null) {
+					spaceShipShoots.remove(toRemoveShoot);
+					toRemoveShoot = null;
+				}
 				
-				//gestion de l'affichage du background
+				
+				
+				//////gestion de l'affichage du background
 				if (posBackground1 <= -screenX*2) {
 					posBackground1=screenX;
 				}
@@ -108,25 +137,12 @@ public class SpaceInvader extends Displayable implements EventHandler {
 					posBackground3=screenX;
 				}
 				
+				//////Execution des stratégies pour les invaders
 				for (GraphicalElement invaderObject : invaders) {
 					invaderObject.execution(countTimer);
 				}
-				
-				//gestion du shoot du vaisseau
-				for (GraphicalElement  shoot : spaceShipShoots) {
-					shoot.execution(countTimer);
-					if (shoot.poxX == 490) {
-						toRemove = shoot;
-					}
-				}
-				
-				if (toRemove != null) {
-					spaceShipShoots.remove(toRemove);
-					toRemove = null;
-					System.out.println("Shoot supprimé");
-				}
-				
-				//on demande à actualiser l'affichage
+
+				/////Actualisation de l'affichage
 				repaint();
 			}
 		}, 0,30);

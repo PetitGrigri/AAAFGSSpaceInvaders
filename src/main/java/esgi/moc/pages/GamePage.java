@@ -14,31 +14,6 @@ import ej.widget.navigation.page.Page;
 import ej.widget.navigation.stack.PageStack;
 import esgi.moc.activities.MainActivity;
 
-/*public class GamePage extends Page {
-	
-	private Split splitContainer;
-	private Image image;
-	
-	public GamePage(){
-		
-		splitContainer = new Split(false,(float)0.2);
-		
-		try {
-			image = Image.createImage("/images/invader.png");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		EditableStyle style = new EditableStyle();
-		SimpleImageBackground sim = new SimpleImageBackground()
-		sim.setImage(image);
-		style.setBackground(sim);
-		
-		splitContainer.add());
-	}
-	
-}*/
 
 public class GamePage extends Displayable {
 	
@@ -46,13 +21,7 @@ public class GamePage extends Displayable {
 
 	public GamePage(Display display) {
 		super(display);
-		// TODO Auto-generated constructor stub
-		try {
-			image = Image.createImage("/images/invader.png");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		
 	}
 

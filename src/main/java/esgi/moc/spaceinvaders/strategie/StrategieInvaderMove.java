@@ -2,12 +2,16 @@ package esgi.moc.spaceinvaders.strategie;
 
 import esgi.moc.spaceinvaders.GraphicalElement;
 
-//une colonne : 68px
-public class StrategieInvaderDroit extends Strategie {
+public class StrategieInvaderMove extends Strategie {
 
-	private boolean directionDown 	= true;
-	private int changeLeftPos		= -7;
-	private int changeTopPos		= -1;
+	private int changeLeftPos;
+	private int changeTopPos;
+
+	public StrategieInvaderMove(int changeLeftPos, int changeTopPos) {
+		super();
+		this.changeLeftPos = changeLeftPos;
+		this.changeTopPos = changeTopPos;
+	}
 
 
 	@Override

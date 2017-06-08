@@ -1,24 +1,30 @@
 package esgi.moc.activities;
 
+import java.io.IOException;
+
 import ej.microui.MicroUI;
-import ej.microui.display.Colors;
 import ej.microui.display.GraphicsContext;
+import ej.microui.display.Image;
 import ej.mwt.Desktop;
 import ej.mwt.Panel;
 import ej.style.Stylesheet;
-import ej.style.border.SimpleRectangularBorder;
+import ej.style.background.PlainBackground;
+import ej.style.background.SimpleImageBackground;
 import ej.style.outline.SimpleOutline;
 import ej.style.selector.ClassSelector;
+import ej.style.selector.TypeSelector;
+import ej.style.selector.combinator.ChildCombinator;
 import ej.style.util.EditableStyle;
 import ej.style.util.StyleHelper;
 import ej.wadapps.app.Activity;
+import ej.widget.basic.Label;
+import ej.widget.composed.Button;
 import ej.widget.navigation.navigator.SimpleNavigator;
-import ej.widget.navigation.transition.HorizontalTransitionManager;
-import esgi.moc.pages.MenuPage;
+import esgi.moc.pages.MainPage;
 
 public class MainActivity implements Activity {
 	
-	public static SimpleNavigator simpleNav;
+	public static SimpleNavigator navigation;
 
 	@Override
 	public String getID() {
@@ -42,40 +48,49 @@ public class MainActivity implements Activity {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		
-		MicroUI.start();
+
+		MicroUI.start(); //toujours lancer cette commande pour avoir l'affichage sur l'écran
 		
-		simpleNav = new SimpleNavigator();
-		simpleNav.setTransitionManager(new HorizontalTransitionManager());
+		//création de nouveaux styles
+		Stylesheet sheet = StyleHelper.getStylesheet();
 		
-		Desktop desk = new Desktop();
-		Panel pnl = new Panel();
-		
-		simpleNav.show(MenuPage.class.getName(), true);
-		pnl.setWidget(simpleNav);
-		
-		pnl.show(desk, true);
-		
-		//style
-		Stylesheet sts = StyleHelper.getStylesheet();
+		//création d'un nouveau style
 		EditableStyle myStyle = new EditableStyle();
-		EditableStyle myStyle2 = new EditableStyle();
-		
+		myStyle.setBackground(new PlainBackground());
+		try {
+			myStyle.setBackground(new SimpleImageBackground(Image.createImage("/images/title.png"), GraphicsContext.HCENTER | GraphicsContext.BOTTOM, false));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		myStyle.setAlignment(GraphicsContext.HCENTER | GraphicsContext.VCENTER);
-		myStyle.setForegroundColor(Colors.WHITE);
-		myStyle.setBackgroundColor(Colors.BLACK);
+
 		
-		ClassSelector labelSelector = new ClassSelector("LABEL");
+
+		//création d'un second style pour le bouton d'exit
+		EditableStyle bottomStyle = new EditableStyle();
+		bottomStyle.setAlignment(GraphicsContext.HCENTER | GraphicsContext.BOTTOM);
+		bottomStyle.setBackgroundColor(0x000000);
+		bottomStyle.setForegroundColor(0xffffff);
+		bottomStyle.setPadding(new SimpleOutline(10));
+
+		//on attribue les différents styles
+		sheet.addRule(new ChildCombinator(new ClassSelector("play"), new TypeSelector(Label.class)), myStyle);
+		sheet.addRule(new ChildCombinator(new TypeSelector(Button.class), new TypeSelector(Label.class)), bottomStyle);
+
 		
-		myStyle2.setBorder(new SimpleRectangularBorder(4));
-		myStyle2.setBorderColor(Colors.BLUE);
-		myStyle2.setMargin(new SimpleOutline(10));
+		//Ordre des widgets : Le Desktop contient un Panel qui contient un Navigator qui contient une page 
+		//création des  widgets 
+		Desktop desktop = new Desktop();
+		Panel panel = new Panel();
+		navigation = new SimpleNavigator();
 		
-		ClassSelector buttonSelector = new ClassSelector("BUTTON");
+		//configuration et affichage des  widgets
+		navigation.show(MainPage.class.getName(), true);
+		panel.setWidget(navigation);
+		panel.show(desktop, true);
 		
-		sts.addRule(labelSelector, myStyle);
-		sts.addRule(buttonSelector, myStyle2);
-		
-		desk.show();
+		desktop.show();
 		
 	}
 

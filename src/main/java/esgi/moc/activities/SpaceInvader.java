@@ -3,7 +3,6 @@ package esgi.moc.activities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import ej.microui.display.Colors;
 import ej.microui.display.Display;
 import ej.microui.display.Displayable;
@@ -18,8 +17,6 @@ import esgi.moc.spaceinvaders.strategie.StrategieExplosion;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol2;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderMove;
-import esgi.moc.spaceinvaders.strategie.StrategieInvaderMove;
-import esgi.moc.spaceinvaders.strategie.StrategieInvaderMove;
 import esgi.moc.spaceinvaders.strategie.StrategieShootSpaceShip;
 import ej.bon.Timer;
 import ej.bon.TimerTask;
@@ -33,8 +30,11 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	private int posSpaceShipX = 50;
 	private int score = 0;
 	
+	//la liste des éléments graphiques à afficher
 	private List<GraphicalElement> invaders = new ArrayList<GraphicalElement>();
 	private List<GraphicalElement> spaceShipShoots = new ArrayList<GraphicalElement>();
+	
+	//la liste des éléments graphiques à supprimer des listes précédentes
 	private List<GraphicalElement> toRemoveInvaders = new ArrayList<GraphicalElement>();
 	private List<GraphicalElement> toRemoveShoots = new ArrayList<GraphicalElement>();
 	
@@ -188,26 +188,26 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	private void generateLevelInvadersLevel2() {		
 		//le bloc d'invader
 		invaders.add(new GraphicalElement(screenX+50, 	0, 		25, new StrategieInvaderCol2(0,   68), 	0));
-		invaders.add(new GraphicalElement(screenX+50, 	68, 	25, new StrategieInvaderCol2(68,  136), 	0));
-		invaders.add(new GraphicalElement(screenX+50, 	138, 	25, new StrategieInvaderCol2(136, 204), 	0));
-		invaders.add(new GraphicalElement(screenX+50, 	204, 	25, new StrategieInvaderCol2(204, 272), 	0));
+		invaders.add(new GraphicalElement(screenX+50, 	68, 	25, new StrategieInvaderCol2(68,  136), 0));
+		invaders.add(new GraphicalElement(screenX+50, 	138, 	25, new StrategieInvaderCol2(136, 204), 0));
+		invaders.add(new GraphicalElement(screenX+50, 	204, 	25, new StrategieInvaderCol2(204, 272), 0));
 		invaders.add(new GraphicalElement(screenX+100, 	68, 	25, new StrategieInvaderCol2(0,   68), 	0));
-		invaders.add(new GraphicalElement(screenX+100, 	138, 	25, new StrategieInvaderCol2(68,  136), 	0));
-		invaders.add(new GraphicalElement(screenX+100, 	204, 	25, new StrategieInvaderCol2(136, 204), 	0));
-		invaders.add(new GraphicalElement(screenX+100, 	272, 	25, new StrategieInvaderCol2(204, 272), 	0));
-		invaders.add(new GraphicalElement(screenX+150, 	0, 		25, new StrategieInvaderCol2(136, 204), 	0));
-		invaders.add(new GraphicalElement(screenX+150, 	204, 	25, new StrategieInvaderCol2(68,  136), 	0));
+		invaders.add(new GraphicalElement(screenX+100, 	138, 	25, new StrategieInvaderCol2(68,  136), 0));
+		invaders.add(new GraphicalElement(screenX+100, 	204, 	25, new StrategieInvaderCol2(136, 204), 0));
+		invaders.add(new GraphicalElement(screenX+100, 	272, 	25, new StrategieInvaderCol2(204, 272), 0));
+		invaders.add(new GraphicalElement(screenX+150, 	0, 		25, new StrategieInvaderCol2(136, 204), 0));
+		invaders.add(new GraphicalElement(screenX+150, 	204, 	25, new StrategieInvaderCol2(68,  136), 0));
 		
 		//les invaders en mouvement
 		invaders.add(new GraphicalElement(screenX+30, 	10, 		45, new StrategieInvaderMove(-4, 1), 	countTimer+500));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-8, -2), countTimer+1000));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY/2, 	45, new StrategieInvaderMove(-8, 0), 	countTimer+1500));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY, 	45, new StrategieInvaderMove(-3, -2), countTimer+2000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-8, -2),	countTimer+1000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY/2, 	45, new StrategieInvaderMove(-8, 0),	countTimer+1500));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY, 	45, new StrategieInvaderMove(-3, -2), 	countTimer+2000));
 		
 		invaders.add(new GraphicalElement(screenX+30, 	10, 		45, new StrategieInvaderMove(-4, 1), 	countTimer+2500));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-8, -2), countTimer+3000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-8, -2), 	countTimer+3000));
 		invaders.add(new GraphicalElement(screenX+30, 	screenY/2, 	45, new StrategieInvaderMove(-8, 0), 	countTimer+3500));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-3, -2), countTimer+4000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-3, -2), 	countTimer+4000));
 	}
 	
 	/**

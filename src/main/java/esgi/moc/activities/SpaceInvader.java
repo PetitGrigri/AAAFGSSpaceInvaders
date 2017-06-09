@@ -26,8 +26,8 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	Image background1,background2,background3, spaceship, invader, shootSpaceShip;
 	private int screenX, screenY;
 	private int posBackground1, posBackground2, posBackground3;
-	private int posSpaceShipY;
-	private int posSpaceShipX = 50;
+	private static int posSpaceShipY;
+	private static int posSpaceShipX = 50;
 	private int score = 0;
 	
 	//la liste des éléments graphiques à afficher
@@ -74,7 +74,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		this.posBackground2 = 0;
 		this.posBackground3 = screenX;
 
-		this.posSpaceShipY = screenY/2;
+		SpaceInvader.posSpaceShipY = screenY/2;
 		
 		generateLevelInvadersLevel1();
 		
@@ -92,7 +92,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				//////gestion du Tir du vaisseau
 				//réalisation du Tir
 				if (countTimer%300 == 0) {
-					spaceShipShoots.add(new GraphicalElement(posSpaceShipX+20, posSpaceShipY, 0, new StrategieShootSpaceShip()));
+					spaceShipShoots.add(new GraphicalElement(SpaceInvader.posSpaceShipX+20, SpaceInvader.posSpaceShipY, 0, new StrategieShootSpaceShip()));
 				}
 				if (countTimer%4800 == 0) {
 					generateLevelInvadersLevel2();
@@ -134,12 +134,12 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				for (GraphicalElement invaderObject : invaders) {
 					invaderObject.execution(countTimer);
 					
-					if 	(!( ((posSpaceShipX + 14)  < (invaderObject.posX - 11)) ||
-							((posSpaceShipX - 14)  > (invaderObject.posX + 11)) || 
-							((posSpaceShipY - 15) > (invaderObject.posY +17))  ||
-							((posSpaceShipY + 15) < (invaderObject.posY-17))
+					if 	(!( ((SpaceInvader.posSpaceShipX + 14)  < (invaderObject.posX - 11)) ||
+							((SpaceInvader.posSpaceShipX - 14)  > (invaderObject.posX + 11)) || 
+							((SpaceInvader.posSpaceShipY - 15) > (invaderObject.posY +17))  ||
+							((SpaceInvader.posSpaceShipY + 15) < (invaderObject.posY-17))
 							)) {
-						System.out.println("BOUUUMMMMMM ! ! ! spaceship("+posSpaceShipX+" x "+posSpaceShipY+") invader("+invaderObject.posX+" x "+invaderObject.posY+")");
+						System.out.println("BOUUUMMMMMM ! ! ! spaceship("+SpaceInvader.posSpaceShipX+" x "+SpaceInvader.posSpaceShipY+") invader("+invaderObject.posX+" x "+invaderObject.posY+")");
 					}
 
 					if (invaderObject.posX <= -10) {
@@ -221,7 +221,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 			//quand on à un évènement de type de Drag, on récupère la position, on réinitialise certaines valeurs et on bloque l'animation
 			if (Pointer.isDragged(event)) {
 				Pointer pointer 		= (Pointer) Event.getGenerator(event);
-				this.posSpaceShipY		= pointer.getY();		
+				SpaceInvader.posSpaceShipY		= pointer.getY();		
 			}
 		}
 		return false;
@@ -241,7 +241,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		g.drawImage(background2, posBackground2, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 		g.drawImage(background3, posBackground3, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 	
-		g.drawImage(spaceship, posSpaceShipX, posSpaceShipY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
+		g.drawImage(spaceship, SpaceInvader.posSpaceShipX, SpaceInvader.posSpaceShipY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
 		
 		for (GraphicalElement invaderObject : invaders) {
 			if (invaderObject.startTimer <= countTimer) {

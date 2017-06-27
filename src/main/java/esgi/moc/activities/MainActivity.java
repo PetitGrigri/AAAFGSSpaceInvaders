@@ -1,17 +1,11 @@
 package esgi.moc.activities;
 
-import java.io.IOException;
-
 import ej.microui.MicroUI;
 import ej.microui.display.GraphicsContext;
-import ej.microui.display.Image;
 import ej.mwt.Desktop;
 import ej.mwt.Panel;
 import ej.style.Stylesheet;
-import ej.style.background.PlainBackground;
-import ej.style.background.SimpleImageBackground;
 import ej.style.outline.SimpleOutline;
-import ej.style.selector.ClassSelector;
 import ej.style.selector.TypeSelector;
 import ej.style.selector.combinator.ChildCombinator;
 import ej.style.util.EditableStyle;
@@ -25,6 +19,7 @@ import esgi.moc.pages.MainPage;
 public class MainActivity implements Activity {
 	
 	public static SimpleNavigator navigation;
+
 
 	@Override
 	public String getID() {
@@ -47,35 +42,19 @@ public class MainActivity implements Activity {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		
-
 		MicroUI.start(); //toujours lancer cette commande pour avoir l'affichage sur l'écran
 		
 		//création de nouveaux styles
 		Stylesheet sheet = StyleHelper.getStylesheet();
-		
-		//création d'un nouveau style
-		EditableStyle myStyle = new EditableStyle();
-		myStyle.setBackground(new PlainBackground());
-		try {
-			myStyle.setBackground(new SimpleImageBackground(Image.createImage("/images/title.png"), GraphicsContext.HCENTER | GraphicsContext.BOTTOM, false));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		myStyle.setAlignment(GraphicsContext.HCENTER | GraphicsContext.VCENTER);
-
-		
 
 		//création d'un second style pour le bouton d'exit
 		EditableStyle bottomStyle = new EditableStyle();
 		bottomStyle.setAlignment(GraphicsContext.HCENTER | GraphicsContext.BOTTOM);
 		bottomStyle.setBackgroundColor(0x000000);
 		bottomStyle.setForegroundColor(0xffffff);
-		bottomStyle.setPadding(new SimpleOutline(10));
+		bottomStyle.setPadding(new SimpleOutline(12));
 
 		//on attribue les différents styles
-		sheet.addRule(new ChildCombinator(new ClassSelector("play"), new TypeSelector(Label.class)), myStyle);
 		sheet.addRule(new ChildCombinator(new TypeSelector(Button.class), new TypeSelector(Label.class)), bottomStyle);
 
 		

@@ -1,16 +1,20 @@
-package esgi.moc.activities;
+package esgi.moc.widget;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import ej.bon.Timer;
+import ej.bon.TimerTask;
 import ej.microui.display.Colors;
-import ej.microui.display.Display;
-import ej.microui.display.Displayable;
 import ej.microui.display.GraphicsContext;
 import ej.microui.display.Image;
 import ej.microui.event.Event;
 import ej.microui.event.generator.Pointer;
-import ej.microui.util.EventHandler;
+import ej.mwt.Widget;
+import ej.style.Element;
+import ej.style.State;
+import esgi.moc.activities.MainActivity;
+import esgi.moc.pages.MainPage;
 import esgi.moc.spaceinvaders.GraphicalElement;
 import esgi.moc.spaceinvaders.strategie.Strategie;
 import esgi.moc.spaceinvaders.strategie.StrategieExplosion;
@@ -18,10 +22,8 @@ import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol2;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderMove;
 import esgi.moc.spaceinvaders.strategie.StrategieShootSpaceShip;
-import ej.bon.Timer;
-import ej.bon.TimerTask;
 
-public class SpaceInvader extends Displayable implements EventHandler {
+public class SpaceInvaderWidget extends Widget implements Element  {
 
 	Image background1,background2,background3, spaceship, invader, shootSpaceShip;
 	private int screenX, screenY;
@@ -43,16 +45,11 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	
 	private Strategie strategieExplosion = new StrategieExplosion();
 	
-	//TODO TODO TODO TODO
-
-	/**
-	 * Constructeur.
-	 * Permetttra d'initialiser les différentes animations (création des différentes images)
-	 * @param display
-	 */
-	public SpaceInvader(Display display) {
-		super(Display.getDefaultDisplay());
-		
+	
+	
+	
+	public SpaceInvaderWidget(int dimH, int dimV) {
+		super();
 		//////Initialisation des images
 		try {
 			//le fond de l'écran
@@ -67,18 +64,16 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		}
 
 		//récupération des dimmensions de l'écran (non utilisé ici car on se base sur la position des barrières)
-		this.screenX = Display.getDefaultDisplay().getWidth();
-		this.screenY = Display.getDefaultDisplay().getHeight();
+		this.screenX = dimV;
+		this.screenY = dimH;
 
 		this.posBackground1 = -screenX;
 		this.posBackground2 = 0;
 		this.posBackground3 = screenX;
 
-		SpaceInvader.posSpaceShipY = screenY/2;
+		SpaceInvaderWidget.posSpaceShipY = screenY/2;
 		
-		generateLevelInvadersLevel1();
-		
-
+		generateInvadersLevel1();
 		
 		t.schedule(new TimerTask() {
 			@Override
@@ -92,10 +87,10 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				//////gestion du Tir du vaisseau
 				//réalisation du Tir
 				if (countTimer%300 == 0) {
-					spaceShipShoots.add(new GraphicalElement(SpaceInvader.posSpaceShipX+20, SpaceInvader.posSpaceShipY, 0, new StrategieShootSpaceShip()));
+					spaceShipShoots.add(new GraphicalElement(SpaceInvaderWidget.posSpaceShipX+20, SpaceInvaderWidget.posSpaceShipY, 0, new StrategieShootSpaceShip()));
 				}
 				if (countTimer%4800 == 0) {
-					generateLevelInvadersLevel2();
+					generateInvadersLevel2();
 				}
 				
 				//execution de la stratégie du shoot, et détection du shoot hors de l'écran
@@ -134,12 +129,14 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				for (GraphicalElement invaderObject : invaders) {
 					invaderObject.execution(countTimer);
 					
-					if 	(!( ((SpaceInvader.posSpaceShipX + 14)  < (invaderObject.posX - 11)) ||
-							((SpaceInvader.posSpaceShipX - 14)  > (invaderObject.posX + 11)) || 
-							((SpaceInvader.posSpaceShipY - 15) > (invaderObject.posY +17))  ||
-							((SpaceInvader.posSpaceShipY + 15) < (invaderObject.posY-17))
+					if 	(!( ((SpaceInvaderWidget.posSpaceShipX + 14)  < (invaderObject.posX - 11)) ||
+							((SpaceInvaderWidget.posSpaceShipX - 14)  > (invaderObject.posX + 11)) || 
+							((SpaceInvaderWidget.posSpaceShipY - 15) > (invaderObject.posY +17))  ||
+							((SpaceInvaderWidget.posSpaceShipY + 15) < (invaderObject.posY-17))
 							)) {
-						System.out.println("BOUUUMMMMMM ! ! ! spaceship("+SpaceInvader.posSpaceShipX+" x "+SpaceInvader.posSpaceShipY+") invader("+invaderObject.posX+" x "+invaderObject.posY+")");
+						System.out.println("BOUUUMMMMMM ! ! ! spaceship("+SpaceInvaderWidget.posSpaceShipX+" x "+SpaceInvaderWidget.posSpaceShipY+") invader("+invaderObject.posX+" x "+invaderObject.posY+")");
+						MainActivity.navigation.show(MainPage.class.getName(), true);
+						t.cancel();
 					}
 
 					if (invaderObject.posX <= -10) {
@@ -156,15 +153,12 @@ public class SpaceInvader extends Displayable implements EventHandler {
 				
 			}
 		}, 0,30);
-		
-		
-		
-		
-		
+		// TODO Auto-generated constructor stub
 	}
 
 	
-	private void generateLevelInvadersLevel1() {		
+	
+	private void generateInvadersLevel1() {		
 		//le bloc d'invader
 		invaders.add(new GraphicalElement(screenX+50, 	0, 		15, new StrategieInvaderCol(0,   68), 	0));
 		invaders.add(new GraphicalElement(screenX+50, 	68, 	15, new StrategieInvaderCol(68,  136), 	0));
@@ -185,7 +179,7 @@ public class SpaceInvader extends Displayable implements EventHandler {
 	}
 
 
-	private void generateLevelInvadersLevel2() {		
+	private void generateInvadersLevel2() {		
 		//le bloc d'invader
 		invaders.add(new GraphicalElement(screenX+50, 	0, 		25, new StrategieInvaderCol2(0,   68), 	0));
 		invaders.add(new GraphicalElement(screenX+50, 	68, 	25, new StrategieInvaderCol2(68,  136), 0));
@@ -210,6 +204,9 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-3, -2), 	countTimer+4000));
 	}
 	
+	
+	
+	
 	/**
 	 * permet de gérer les évènements sur l'écran (dans ce cas précis)
 	 */
@@ -221,27 +218,19 @@ public class SpaceInvader extends Displayable implements EventHandler {
 			//quand on à un évènement de type de Drag, on récupère la position, on réinitialise certaines valeurs et on bloque l'animation
 			if (Pointer.isDragged(event)) {
 				Pointer pointer 		= (Pointer) Event.getGenerator(event);
-				SpaceInvader.posSpaceShipY		= pointer.getY();		
+				SpaceInvaderWidget.posSpaceShipY		= pointer.getY();		
 			}
 		}
 		return false;
 	}
-
-	
-	
-	/**
-	 * Méthode qui permettra d'atualiser l'affichage
-	 */
 	@Override
-	public void paint(GraphicsContext g) 
-	{
-
+	public void render(GraphicsContext g) {
 		//affichage de l'image de fond
 		g.drawImage(background1, posBackground1, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 		g.drawImage(background2, posBackground2, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 		g.drawImage(background3, posBackground3, this.screenY/2, GraphicsContext.LEFT | GraphicsContext.VCENTER);
 	
-		g.drawImage(spaceship, SpaceInvader.posSpaceShipX, SpaceInvader.posSpaceShipY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
+		g.drawImage(spaceship, SpaceInvaderWidget.posSpaceShipX, SpaceInvaderWidget.posSpaceShipY, GraphicsContext.HCENTER | GraphicsContext.VCENTER);
 		
 		for (GraphicalElement invaderObject : invaders) {
 			if (invaderObject.startTimer <= countTimer) {
@@ -256,15 +245,9 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		g.drawString("Score : "+this.score, 0, 0, 0);
 	}
 
-	
-
-	
-	
 	@Override
-	public EventHandler getController() {
+	public void validate(int widthHint, int heightHint) {
 		// TODO Auto-generated method stub
-		//return null;
-		return this;
 	}
 	
 	private void cleanGraphicalElement() {
@@ -276,6 +259,62 @@ public class SpaceInvader extends Displayable implements EventHandler {
 		}
 		toRemoveInvaders.clear();
 		toRemoveShoots.clear();
+	}
+
+
+
+	@Override
+	public boolean hasClassSelector(String classSelector) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean isInState(State state) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public String getAttribute(String attribute) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public Element getParentElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public Element[] getChildrenElements() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public Element getChild(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public int getChildrenCount() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

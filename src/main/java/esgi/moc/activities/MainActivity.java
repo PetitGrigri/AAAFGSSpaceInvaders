@@ -67,13 +67,13 @@ public class MainActivity implements Activity {
 		EditableStyle labelScoreOddStyle = new EditableStyle();
 		labelScoreOddStyle.setAlignment(GraphicsContext.HCENTER | GraphicsContext.BOTTOM);
 		labelScoreOddStyle.setBackgroundColor(0x333333);
-		labelScoreOddStyle.setForegroundColor(0xeeeeee);
+		labelScoreOddStyle.setForegroundColor(0xffffff);
 		labelScoreOddStyle.setPadding(new SimpleOutline(5));
 		
 		EditableStyle labelScoreEvenStyle = new EditableStyle();
 		labelScoreEvenStyle.setAlignment(GraphicsContext.HCENTER | GraphicsContext.BOTTOM);
-		labelScoreEvenStyle.setBackgroundColor(0xcccccc);
-		labelScoreEvenStyle.setForegroundColor(0x333333);
+		labelScoreEvenStyle.setBackgroundColor(0x666666);
+		labelScoreEvenStyle.setForegroundColor(0xffffff);
 		labelScoreEvenStyle.setPadding(new SimpleOutline(5));
 
 		//on attribue les différents styles

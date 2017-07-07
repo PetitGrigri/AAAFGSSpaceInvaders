@@ -1,11 +1,11 @@
 package esgi.moc.pages;
 
+import java.util.ArrayList;
 
 import ej.components.dependencyinjection.ServiceLoaderFactory;
 import ej.exit.ExitHandler;
 import ej.widget.basic.Label;
 import ej.widget.composed.Button;
-import ej.widget.composed.ButtonImage;
 import ej.widget.container.Dock;
 import ej.widget.container.List;
 import ej.widget.container.Scroll;
@@ -18,10 +18,10 @@ public class ScorePage extends Page {
     Dock dock;
     Scroll scrollCenter;
     List listBottom, listCenter;
-    Button exitButton, scoreButton;
+    Button backButton, scoreButton;
     Button playButton;
-
-    Page that = this;
+    
+    public static ArrayList<Integer> scores = new ArrayList<Integer>();
     
     public ScorePage() 
     {
@@ -34,66 +34,57 @@ public class ScorePage extends Page {
     	listBottom = new List();
     	listCenter = new List(false);
     	
-    	listCenter.add(new Label("Test"));
-    	listCenter.add(new Label("Test1"));
-    	listCenter.add(new Label("Test2"));
-    	listCenter.add(new Label("Test3"));
-    	listCenter.add(new Label("Test"));
-    	listCenter.add(new Label("Test1"));
-    	listCenter.add(new Label("Test2"));
-    	listCenter.add(new Label("Test3"));
-    	listCenter.add(new Label("Test"));
-    	listCenter.add(new Label("Test1"));
-    	listCenter.add(new Label("Test2"));
-    	listCenter.add(new Label("Test3"));
-    	listCenter.add(new Label("Test"));
-    	listCenter.add(new Label("Test1"));
-    	listCenter.add(new Label("Test2"));
-    	listCenter.add(new Label("Test3"));
-    	listCenter.add(new Label("Test"));
-    	listCenter.add(new Label("Test1"));
-    	listCenter.add(new Label("Test2"));
-    	listCenter.add(new Label("Test3"));
-    	listCenter.add(new Label("Test"));
-    	listCenter.add(new Label("Test1"));
-    	listCenter.add(new Label("Test2"));
-    	listCenter.add(new Label("Test3"));
+    	if (!scores.isEmpty()) {
+	    	for (int a = scores.size(); a> 0; a--) {
+	    		Label tempoLabelScore = new Label(((scores.size() == a)?"Dernier score : " : "")+Integer.toString(scores.get(a-1)));
+	    		
+		    	if ((a-1)%2 == 0)
+		    		tempoLabelScore.addClassSelector("scoreOdd");
+		    	else 
+		    		tempoLabelScore.addClassSelector("scoreEven");
+		    	
+	    		listCenter.add(tempoLabelScore);
+	    	}
+    	} else {
+    		Label tempoLabelScore = new Label("Vous n'avez pas encore de score");
+    		tempoLabelScore.addClassSelector("score");
+    		listCenter.add(tempoLabelScore);
+    	}
     	
-    	//scrollCenter.setWidget(listCenter);
     	
     	scrollCenter.setWidget(listCenter);
     	
         //Création de deux boutons
-        exitButton = new Button("Exit");
+        backButton = new Button("Back");
         playButton = new Button("Play");
         
         //ajout des bouton dans la liste du bas
-        listBottom.add(exitButton);
+        listBottom.add(backButton);
         listBottom.add(playButton);
 
         //Ajout d'un option de click sur le bouton 1
         playButton.addOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick() {
-
 				System.out.println("Play");
 				MainActivity.navigation.show(GamePage.class.getName(), true);
-
 			}
 		});
         
       //Ajout d'une option de click sur le bouton 1 (permettant de quitter notre application)
-        exitButton.addOnClickListener(new OnClickListener() {
+        backButton.addOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick() {
 				System.out.println("Exit");
-				ExitHandler exitHandler = ServiceLoaderFactory.getServiceLoader().getService(ExitHandler.class);
-				if (exitHandler != null) {
-					exitHandler.exit();
-				}
+				MainActivity.navigation.show(MainPage.class.getName(), true);
 			}
 		});
         
+        //Titre
+        Label titre = new Label("Hall of Fame");
+        titre.addClassSelector("scoreTitle");
+        
+        dock.addTop(titre);
         dock.setCenter(scrollCenter);
         dock.addBottom(listBottom);
 

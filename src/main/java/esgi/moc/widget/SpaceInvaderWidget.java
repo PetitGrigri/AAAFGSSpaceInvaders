@@ -15,9 +15,8 @@ import ej.style.Element;
 import ej.style.State;
 import esgi.moc.activities.MainActivity;
 import esgi.moc.pages.MainPage;
+import esgi.moc.pages.ScorePage;
 import esgi.moc.spaceinvaders.GraphicalElement;
-import esgi.moc.spaceinvaders.strategie.Strategie;
-import esgi.moc.spaceinvaders.strategie.StrategieExplosion;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderCol2;
 import esgi.moc.spaceinvaders.strategie.StrategieInvaderMove;
@@ -25,6 +24,7 @@ import esgi.moc.spaceinvaders.strategie.StrategieShootSpaceShip;
 
 public class SpaceInvaderWidget extends Widget implements Element  {
 
+	//les variables nécessaires au déroulement du jeu
 	Image background1,background2,background3, spaceship, invader, shootSpaceShip;
 	private int screenX, screenY;
 	private int posBackground1, posBackground2, posBackground3;
@@ -40,17 +40,21 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 	private List<GraphicalElement> toRemoveInvaders = new ArrayList<GraphicalElement>();
 	private List<GraphicalElement> toRemoveShoots = new ArrayList<GraphicalElement>();
 	
+	//les Timers qui seront utilisés pour le raffraichissement
 	private Timer t = new Timer();
 	private int countTimer = 0;
 	
-	private Strategie strategieExplosion = new StrategieExplosion();
-	
-	
-	
-	
-	public SpaceInvaderWidget(int dimH, int dimV) {
+
+	/**
+	 * Constructeur 
+	 * 
+	 * @param dimH Hauteur du widget
+	 * @param dimV Longueur du widget
+	 */
+	public SpaceInvaderWidget(int dimH, int dimV) 
+	{
 		super();
-		//////Initialisation des images
+
 		try {
 			//le fond de l'écran
 			background1 = Image.createImage("/images/background_1.png");
@@ -63,23 +67,28 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 			e.printStackTrace();
 		}
 
-		//récupération des dimmensions de l'écran (non utilisé ici car on se base sur la position des barrières)
+		//définition de la taille du widget
 		this.screenX = dimV;
 		this.screenY = dimH;
-
+		
+		//positionnement des background
 		this.posBackground1 = -screenX;
 		this.posBackground2 = 0;
 		this.posBackground3 = screenX;
 
+		//positionnement du vaisseau
 		SpaceInvaderWidget.posSpaceShipY = screenY/2;
 		
+		//génération de la première vague de vaisseau
 		generateInvadersLevel1();
 		
 		t.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				
+				//incrémentation du timer
 				countTimer+=30;
+				
+				//modification de la position des fonds
 				posBackground1-=10;
 				posBackground2-=10;
 				posBackground3-=10;
@@ -134,8 +143,11 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 							((SpaceInvaderWidget.posSpaceShipY - 15) > (invaderObject.posY +17))  ||
 							((SpaceInvaderWidget.posSpaceShipY + 15) < (invaderObject.posY-17))
 							)) {
+						
+						
 						System.out.println("BOUUUMMMMMM ! ! ! spaceship("+SpaceInvaderWidget.posSpaceShipX+" x "+SpaceInvaderWidget.posSpaceShipY+") invader("+invaderObject.posX+" x "+invaderObject.posY+")");
 						MainActivity.navigation.show(MainPage.class.getName(), true);
+						ScorePage.scores.add(new Integer(score));
 						t.cancel();
 					}
 
@@ -158,7 +170,8 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 
 	
 	
-	private void generateInvadersLevel1() {		
+	private void generateInvadersLevel1() 
+	{		
 		//le bloc d'invader
 		invaders.add(new GraphicalElement(screenX+50, 	0, 		15, new StrategieInvaderCol(0,   68), 	0));
 		invaders.add(new GraphicalElement(screenX+50, 	68, 	15, new StrategieInvaderCol(68,  136), 	0));
@@ -172,14 +185,15 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 		invaders.add(new GraphicalElement(screenX+150, 	204, 	15, new StrategieInvaderCol(68,  136), 	0));
 		
 		//les invaders en mouvement
-		invaders.add(new GraphicalElement(screenX+30, 	10, 	30, new StrategieInvaderMove(-4, 1), 	countTimer+1000));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY,30, new StrategieInvaderMove(-8, -2), countTimer+2000));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY/2, 	  30, new StrategieInvaderMove(-8, 0), 	countTimer+3000));
-		invaders.add(new GraphicalElement(screenX+30, 	screenY,30, new StrategieInvaderMove(-3, -2), countTimer+4000));
+		invaders.add(new GraphicalElement(screenX+30, 	10, 		30, 	new StrategieInvaderMove(-4, 1), 	countTimer+1000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY,	30, 	new StrategieInvaderMove(-8, -2), countTimer+2000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY/2, 	30, 	new StrategieInvaderMove(-8, 0), 	countTimer+3000));
+		invaders.add(new GraphicalElement(screenX+30, 	screenY,	30, 	new StrategieInvaderMove(-3, -2), countTimer+4000));
 	}
 
 
-	private void generateInvadersLevel2() {		
+	private void generateInvadersLevel2()
+	{		
 		//le bloc d'invader
 		invaders.add(new GraphicalElement(screenX+50, 	0, 		25, new StrategieInvaderCol2(0,   68), 	0));
 		invaders.add(new GraphicalElement(screenX+50, 	68, 	25, new StrategieInvaderCol2(68,  136), 0));
@@ -204,8 +218,7 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 		invaders.add(new GraphicalElement(screenX+30, 	screenY,	45, new StrategieInvaderMove(-3, -2), 	countTimer+4000));
 	}
 	
-	
-	
+
 	
 	/**
 	 * permet de gérer les évènements sur l'écran (dans ce cas précis)
@@ -253,9 +266,11 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 	private void cleanGraphicalElement() {
 		for (GraphicalElement  element : toRemoveInvaders) {
 			invaders.remove(element);
+			element = null;
 		}
 		for (GraphicalElement  element : toRemoveShoots) {
 			spaceShipShoots.remove(element);
+			element = null;
 		}
 		toRemoveInvaders.clear();
 		toRemoveShoots.clear();

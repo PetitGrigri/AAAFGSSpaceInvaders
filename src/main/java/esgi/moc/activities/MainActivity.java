@@ -23,6 +23,7 @@ import ej.widget.container.List;
 import ej.widget.navigation.TransitionManager;
 import ej.widget.navigation.navigator.SimpleNavigator;
 import ej.widget.navigation.page.Page;
+import ej.widget.navigation.transition.HorizontalTransitionManager;
 import esgi.moc.pages.MainPage;
 
 public class MainActivity implements Activity {
@@ -87,6 +88,7 @@ public class MainActivity implements Activity {
 		Desktop desktop = new Desktop();
 		Panel panel = new Panel();
 		navigation = new SimpleNavigator();
+		//navigation.setTransitionManager(new HorizontalTransitionManager());
 		
 		//configuration et affichage des  widgets
 		navigation.show(MainPage.class.getName(), true);

@@ -14,6 +14,7 @@ import ej.mwt.Widget;
 import ej.style.Element;
 import ej.style.State;
 import esgi.moc.activities.MainActivity;
+import esgi.moc.pages.LoosePage;
 import esgi.moc.pages.MainPage;
 import esgi.moc.pages.ScorePage;
 import esgi.moc.spaceinvaders.GraphicalElement;
@@ -95,7 +96,7 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 				
 				//////gestion du Tir du vaisseau
 				//réalisation du Tir
-				if (countTimer%300 == 0) {
+				if (countTimer%600 == 0) {
 					spaceShipShoots.add(new GraphicalElement(SpaceInvaderWidget.posSpaceShipX+20, SpaceInvaderWidget.posSpaceShipY, 0, new StrategieShootSpaceShip()));
 				}
 				if (countTimer%4800 == 0) {
@@ -146,7 +147,7 @@ public class SpaceInvaderWidget extends Widget implements Element  {
 						
 						
 						System.out.println("BOUUUMMMMMM ! ! ! spaceship("+SpaceInvaderWidget.posSpaceShipX+" x "+SpaceInvaderWidget.posSpaceShipY+") invader("+invaderObject.posX+" x "+invaderObject.posY+")");
-						MainActivity.navigation.show(MainPage.class.getName(), true);
+						MainActivity.navigation.show(LoosePage.class.getName(), true);
 						ScorePage.scores.add(new Integer(score));
 						t.cancel();
 					}

@@ -15,8 +15,5 @@ public class GamePage extends Page {
     	dock = new Dock();
     	dock.setCenter(new SpaceInvaderWidget(272, 480));
         this.setWidget(dock);
-        
-        
-        
     }
 }
